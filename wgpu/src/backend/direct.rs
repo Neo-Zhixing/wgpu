@@ -1629,6 +1629,17 @@ impl crate::Context for Context {
         id
     }
 
+    fn texture_view_get_hal<A, F>(
+        &self,
+        texture_view_id: Self::TextureViewId,
+        callback: F
+    )  where
+    A: wgc::hub::HalApi,
+    F: FnOnce(Option<&wgc::resource::TextureView<A>>) {
+        let global = &self.0;
+        global.texture_view_get_hal::<A, F>(texture_view_id, callback)
+    }
+
     fn surface_drop(&self, _surface: &Self::SurfaceId) {
         //TODO: swapchain needs to hold the surface alive
         //self.0.surface_drop(*surface)

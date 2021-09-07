@@ -342,6 +342,13 @@ trait Context: Debug + Send + Sized + Sync {
     fn texture_destroy(&self, buffer: &Self::TextureId);
     fn texture_drop(&self, texture: &Self::TextureId);
     fn texture_view_drop(&self, texture_view: &Self::TextureViewId);
+    fn texture_view_get_hal<A, F>(
+        &self,
+        texture_view_id: Self::TextureViewId,
+        callback: F
+    )  where
+    A: wgc::hub::HalApi,
+    F: FnOnce(Option<&wgc::resource::TextureView<A>>);
     fn sampler_drop(&self, sampler: &Self::SamplerId);
     fn query_set_drop(&self, query_set: &Self::QuerySetId);
     fn bind_group_drop(&self, bind_group: &Self::BindGroupId);
@@ -649,6 +656,16 @@ pub struct Texture {
 pub struct TextureView {
     context: Arc<C>,
     id: <C as Context>::TextureViewId,
+}
+
+impl TextureView {
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn as_hal<A, F>(
+        &self,
+        callback: F
+    ) where A: wgc::hub::HalApi, F: FnOnce(Option<&wgc::resource::TextureView<A>>) {
+        self.context.texture_view_get_hal::<A, F>(self.id, callback);
+    }
 }
 
 /// Handle to a sampler.

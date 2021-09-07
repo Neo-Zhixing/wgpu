@@ -3317,6 +3317,24 @@ impl<G: GlobalIdentityHandlerFactory> Global<G> {
         (id, Some(error))
     }
 
+    pub fn texture_view_get_hal<A, F>(
+        &self,
+        texture_view_id: id::TextureViewId,
+        callback: F,
+    )
+        where A: HalApi,
+        F: FnOnce(Option<&crate::resource::TextureView<A>>) {
+        profiling::scope!("create_view", "Texture");
+
+        let hub = A::hub(self);
+        let mut token = Token::root();
+
+        let (texture_guard, mut token) = hub.texture_views.read(&mut token);
+
+        let texture_view = texture_guard.get(texture_view_id).ok();
+        callback(texture_view);
+    }
+
     pub fn texture_view_label<A: HalApi>(&self, id: id::TextureViewId) -> String {
         A::hub(self).texture_views.label_for_resource(id)
     }

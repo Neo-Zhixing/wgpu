@@ -371,7 +371,7 @@ impl Texture {
 
 #[derive(Debug)]
 pub struct TextureView {
-    raw: vk::ImageView,
+    pub raw: vk::ImageView,
     attachment: FramebufferAttachment,
 }
 
