@@ -659,6 +659,7 @@ pub struct TextureView {
 }
 
 impl TextureView {
+    /// Convert the texture object into an hal object
     #[cfg(not(target_arch = "wasm32"))]
     pub fn as_hal<A, F>(
         &self,

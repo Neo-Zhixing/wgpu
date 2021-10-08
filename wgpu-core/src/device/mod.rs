@@ -3329,7 +3329,7 @@ impl<G: GlobalIdentityHandlerFactory> Global<G> {
         let hub = A::hub(self);
         let mut token = Token::root();
 
-        let (texture_guard, mut token) = hub.texture_views.read(&mut token);
+        let (texture_guard, _) = hub.texture_views.read(&mut token);
 
         let texture_view = texture_guard.get(texture_view_id).ok();
         callback(texture_view);
